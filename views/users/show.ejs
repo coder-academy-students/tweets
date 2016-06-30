@@ -1,0 +1,44 @@
+<% layout('layout') -%>
+<%= 'welcome ' + user.username %>
+
+<ul id="tweet-list">
+  <% user.tweets.forEach(function (val, index ){ %>
+        <% if (val!=null) { %>
+            <li><%= val.text %></li>
+        <% } %>
+  <% }) %>
+</ul>
+
+<form>
+  <input id="tweet-field" type="text" name="tweet">
+  <button type="button" onclick="updateList()" name="button">Add Tweet</button>
+</form>
+
+<script type="text/javascript">
+
+  function updateList(){
+    //clearing and saving the tweet text
+    var textField = $('#tweet-field')
+    var textData = { tweet: textField.val(), _id: '<%= user._id %>' }
+    textField.val('')
+    console.log(textData)
+
+    $.post('/tweets/tweet', textData, function(data) {
+      getJsonData()
+    })
+  }
+
+  function getJsonData(){
+    var userData = {_id: '<%= user._id %>' }
+    var $ul = $('#tweet-list');
+    $ul.html('')
+    $.getJSON('/users/getlist', userData, function(data){
+      console.log('data', value.text)
+      data.tweets.forEach(function(value,index){
+        console.log("ran one tweet")
+        $ul.append('<li>Tweet: ' + value.text + '</li>')
+      })
+    })
+  }
+
+</script>
